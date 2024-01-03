@@ -1,12 +1,13 @@
 ## USING THIS BOILERPLATE
-- Clone the repo doing `git clone https://github.com/RicSala/next-boilerplate.git [NAME_OF_YOUR_PROJECT]`
-- Go to the project folder `cd [NAME_OF_YOUR_PROJECT]`
-- Delete the git folder `rm -rf .git` (this will delete the link with this remote and the history)
-- Init a new git project `git init`
-- Open the project on VSC `code .`
-- Stage and commit the project `git add . && git -m commit "First commit"`
-- Install dependencies `npm i`
-- Create the .env file
+
+-   Clone the repo doing `git clone https://github.com/RicSala/next-boilerplate.git [NAME_OF_YOUR_PROJECT]`
+-   Go to the project folder `cd [NAME_OF_YOUR_PROJECT]`
+-   Delete the git folder `rm -rf .git` (this will delete the link with this remote and the history)
+-   Init a new git project `git init`
+-   Open the project on VSC `code .`
+-   Stage and commit the project `git add . && git -m commit "First commit"`
+-   Install dependencies `npm i`
+-   Create the .env file based on the .env.template file
 
 ## LIBRARIES USED
 
@@ -37,3 +38,8 @@ I have tried several ways to add colors, and make them semantic, but create all 
 -   Use the shadcn colors as they are.
 -   Then, after project is more advanced, fine tune the colors and create the variants you need.
     This is also good for not rely too much on colors to emphasize, but on other ways like shadows, borders, icons, width, etc.
+
+Some approaches I am considering:
+
+-   Work with [DaisyUI] (https://daisyui.com/) instead of shadcn (more themes and colors, but doesn't use Radix)
+-   Use [Tailwind Colors] (https://tailwindcss.com/docs/customizing-colors) to create the colors and variants for shadcn programatically (shadcn would need to be modified)
