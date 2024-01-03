@@ -1,7 +1,12 @@
 ## USING THIS BOILERPLATE
 - Clone the repo doing `git clone https://github.com/RicSala/next-boilerplate.git [NAME_OF_YOUR_PROJECT]`
+- Go to the project folder `cd [NAME_OF_YOUR_PROJECT]`
 - Delete the git folder `rm -rf .git` (this will delete the link with this remote and the history)
 - Init a new git project `git init`
+- Open the project on VSC `code .`
+- Stage and commit the project `git add . && git -m commit "First commit"`
+- Install dependencies `npm i`
+- Create the .env file
 
 ## LIBRARIES USED
 
