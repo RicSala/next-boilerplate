@@ -1,3 +1,8 @@
+## USING THIS BOILERPLATE
+- Clone the repo doing `git clone https://github.com/RicSala/next-boilerplate.git [NAME_OF_YOUR_PROJECT]`
+- Delete the git folder `rm -rf .git` (this will delete the link with this remote and the history)
+- Init a new git project `git init`
+
 ## LIBRARIES USED
 
 -   [CVA](https://cva.style/docs)
