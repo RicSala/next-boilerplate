@@ -1,0 +1,82 @@
+{
+  "type": "excalidraw",
+  "version": 2,
+  "source": "https://excalidraw.com",
+  "elements": [
+    {
+      "id": "PrVS8qdjEUBIUz1puFDpJ",
+      "type": "rectangle",
+      "x": 368.0898132324219,
+      "y": 95.87490844726562,
+      "width": 170.8460693359375,
+      "height": 203.3814697265625,
+      "angle": 0,
+      "strokeColor": "#1e1e1e",
+      "backgroundColor": "transparent",
+      "fillStyle": "solid",
+      "strokeWidth": 2,
+      "strokeStyle": "solid",
+      "roughness": 1,
+      "opacity": 100,
+      "groupIds": [],
+      "frameId": null,
+      "roundness": {
+        "type": 3
+      },
+      "seed": 1290804314,
+      "version": 57,
+      "versionNonce": 1396312774,
+      "isDeleted": false,
+      "boundElements": [
+        {
+          "type": "text",
+          "id": "YMFYgo3_EcVk4JU2z_xvV"
+        }
+      ],
+      "updated": 1705945370029,
+      "link": null,
+      "locked": false
+    },
+    {
+      "id": "YMFYgo3_EcVk4JU2z_xvV",
+      "type": "text",
+      "x": 400.76290130615234,
+      "y": 172.56564331054688,
+      "width": 105.49989318847656,
+      "height": 50,
+      "angle": 0,
+      "strokeColor": "#1e1e1e",
+      "backgroundColor": "transparent",
+      "fillStyle": "solid",
+      "strokeWidth": 2,
+      "strokeStyle": "solid",
+      "roughness": 1,
+      "opacity": 100,
+      "groupIds": [],
+      "frameId": null,
+      "roundness": null,
+      "seed": 1432188890,
+      "version": 34,
+      "versionNonce": 1234827590,
+      "isDeleted": false,
+      "boundElements": null,
+      "updated": 1705945379575,
+      "link": null,
+      "locked": false,
+      "text": "My (first) \nBoilerplate",
+      "fontSize": 20,
+      "fontFamily": 1,
+      "textAlign": "center",
+      "verticalAlign": "middle",
+      "baseline": 43,
+      "containerId": "PrVS8qdjEUBIUz1puFDpJ",
+      "originalText": "My (first) Boilerplate",
+      "lineHeight": 1.25
+    }
+  ],
+  "appState": {
+    "gridSize": null,
+    "viewBackgroundColor": "#fffce8"
+  },
+  "files": {}
+}

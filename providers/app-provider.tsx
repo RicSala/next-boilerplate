@@ -13,7 +13,7 @@ interface ContextProps {
     setSidebarOpen: Dispatch<SetStateAction<boolean>>; //REVIEW: Why this is type Dispatch<SetStateAction<boolean>>?
 }
 
-const AppContext = createContext<ContextProps>({
+export const AppContext = createContext<ContextProps>({
     sidebarOpen: false,
     setSidebarOpen: (): boolean => false,
 });

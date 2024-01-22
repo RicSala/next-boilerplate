@@ -40,31 +40,31 @@ export default async function Home() {
                     Colors
                 </h2>
                 <div className='flex gap-2 text-xs'>
-                    <div className=' p-8 h-10 bg-primary rounded-md text-primary-foreground flex items-center justify-center'>
+                    <div className='p-3 h-10 bg-primary rounded-md text-primary-foreground flex items-center justify-center'>
                         Primary
                     </div>
-                    <div className=' p-8 h-10 bg-secondary rounded-md text-secondary-foreground flex items-center justify-center'>
+                    <div className='p-3 h-10 bg-secondary rounded-md text-secondary-foreground flex items-center justify-center'>
                         Secondary
                     </div>
-                    <div className=' p-8 h-10 bg-muted rounded-md text-muted-foreground flex items-center justify-center'>
+                    <div className='p-3 h-10 bg-muted rounded-md text-muted-foreground flex items-center justify-center'>
                         Muted
                     </div>
-                    <div className=' p-8 h-10 bg-accent rounded-md text-accent-foreground flex items-center justify-center'>
+                    <div className='p-3 h-10 bg-accent rounded-md text-accent-foreground flex items-center justify-center'>
                         accent
                     </div>
-                    <div className=' p-8 h-10 bg-destructive rounded-md text-destructive-foreground flex items-center justify-center'>
+                    <div className='p-3 h-10 bg-destructive rounded-md text-destructive-foreground flex items-center justify-center'>
                         destructive
                     </div>
-                    <div className=' p-8 h-10 bg-popover rounded-md text-popover-foreground flex items-center justify-center'>
+                    <div className='p-3 h-10 bg-popover rounded-md text-popover-foreground flex items-center justify-center'>
                         popover
                     </div>
-                    <div className=' p-8 h-10 bg-background rounded-md text-foreground flex items-center justify-center'>
+                    <div className='p-3 h-10 bg-background rounded-md text-foreground flex items-center justify-center'>
                         bg-fore
                     </div>
-                    <div className=' p-8 h-10 bg-border rounded-md text-black flex items-center justify-center'>
+                    <div className='p-3 h-10 bg-border rounded-md text-black flex items-center justify-center'>
                         border
                     </div>
-                    <div className=' p-8 h-10 bg-ring rounded-md text-white flex items-center justify-center'>
+                    <div className='p-3 h-10 bg-ring rounded-md text-white flex items-center justify-center'>
                         ring
                     </div>
                 </div>
