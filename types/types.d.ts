@@ -52,3 +52,5 @@ export type ApiRequestBody<
     data: T;
     action: A;
 };
+
+export type TStatus = 'idle' | 'loading' | 'success' | 'error';

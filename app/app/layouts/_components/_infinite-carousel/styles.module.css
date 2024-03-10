@@ -1,0 +1,255 @@
+/*	border: 2px solid red;*/
+.window {
+    --speed: 10s;
+    --transition: 0.15s;
+    --rotate: 1;
+    --overflow: '' /* Activate or deactivate the mask */;
+    --buff: 3rem;
+    --inset: 2;
+    --outset: 0;
+    container-type: inline-size;
+    transform-style: preserve-3d;
+    width: 100%;
+    outline: 4px dashed transparent; /*REVIEW: why we need this?*/
+    transition: outline 0.5s;
+}
+
+.scene {
+    height: 100%;
+    width: 100%;
+    /* REVIEW: The color is irrelevant...
+    It's using the color just as a mask.
+    Where there is no color the masked content will not be visible (as there would be "no image" there)
+    Making it a gradient gives it the effect of "fading" in and out */
+    /* 
+    You can apply several masks to an element, and choose how they are combined with mask-composite.
+    You can check different options here: https://developer.mozilla.org/en-US/docs/Web/CSS/mask-composite
+    */
+    mask: linear-gradient(
+            transparent,
+            white var(--buff) calc(100% - var(--buff)),
+            transparent
+        ),
+        linear-gradient(
+            90deg,
+            transparent,
+            white var(--buff) calc(100% - var(--buff)),
+            transparent
+        );
+    mask-composite: intersect;
+}
+
+.grid {
+    --count: 6; /* TODO: this whould prob be update programatically 
+    The number of items - ROWS - you have */
+    height: 100%;
+    width: 100%;
+    margin: 0;
+    list-style-type: none;
+    position: relative; /*REVIEW: Why we need this?*/
+    display: grid;
+    padding: 0 1rem;
+    display: grid;
+    grid-template-columns: 1fr 1fr; /* Distribute the space evenly */
+    gap: 0 2rem;
+    /*	3D translation */
+    transition: transform 0.5s; /* Just in case we want to add the option to activate / deactivate, it will do it smoothly*/
+    transform: rotateX(calc(var(--rotate, 0) * 20deg))
+        rotateZ(calc(var(--rotate, 0) * -20deg))
+        skewX(calc(var(--rotate, 0) * 20deg));
+}
+
+.litem {
+    min-height: 60px;
+    transform-style: preserve-3d; /*REVIEW: This doesn't seem to have any effect...*/
+    width: 100%;
+    z-index: calc(
+        1 + var(--active)
+    ); /* The active element so "come to front" */
+}
+
+/* We use the before to improve the shadow */
+.litem::before {
+    content: '';
+    position: absolute; /* What is the container of this? The parent doesn't seem to be */
+    inset: 4px 4px -2px -2px; /* Move the shadow so the light seems to come from a specific source*/
+    border-radius: 6px;
+    background: hsl(0 0% 0% / 0.1);
+    filter: blur(
+        calc(var(--active, 0) * 8px)
+    ); /* When active, it has the "same shadow", but it's blurred*/
+    z-index: -1;
+    transition:
+        scale var(--transition),
+        opacity var(--transition),
+        translate var(--transition),
+        filter var(--transition);
+    transform-origin: 50% 0;
+    scale: 1 calc(1 + (var(--active, 0) * 0.05)); /* scale the X, Y and Z axis (1 means stay the same) */
+    --tw-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1),
+        0 2px 4px -2px rgb(0 0 0 / 0.1);
+    box-shadow:
+        /* x and y, blur, dispersion, color */
+        0 0 #0000,
+        0 0 #0000,
+        var(--tw-shadow);
+}
+
+/*
+This stops the animation for ALL the items of the grid,
+*/
+.grid:hover li {
+    animation-play-state: paused;
+}
+/* .litem:hover { */ /*Like this you can stop just one*/
+
+/* REVIEW: Why is this not together with all the other properties? */
+.grid {
+    transform-style: preserve-3d;
+    gap: 1rem; /* This is repeated*/
+}
+
+.item {
+    /* This is just "style" */
+    align-items: center;
+    background: hsl(0 0% 100%);
+    border: 1px solid hsl(0 0% 90%);
+    color: hsl(0 0% 10%);
+    border-radius: 6px;
+    cursor: pointer;
+    display: flex;
+    gap: 1rem;
+    height: 100%;
+    justify-content: flex-start;
+    overflow: hidden;
+    padding: 1.25rem;
+    text-align: center;
+    width: 100%;
+
+    /* This is the animation that makes the active on "pop" (together with the shadow)*/
+    transition:
+        transform var(--transition),
+        scale var(--transition),
+        background-color 0.25s,
+        color 0.25s,
+        border 0.25s,
+        box-shadow 0.25s;
+    /* 
+        He uses the "active" variable with calc to make kind of a toggle.
+        When active is 0, the scale is 1, when active is 1, the scale is 1.05
+        */
+    scale: calc(1 + (var(--active, 0) * 0.05)); /*bigger*/
+    /*Nice read: https://drafts.csswg.org/css-transforms-2/#funcdef-translate3d*/
+    transform: translate3d(
+        0,
+        0,
+        calc(var(--active, 0) * 24px) /*bring closer*/
+    );
+}
+
+/* Only if the user has no reduced motion, we apply add the animation */
+@media (prefers-reduced-motion: no-preference) {
+    .grid {
+        /* That's probably why we need a gap in the .grid out of this @media
+        So people that has reduced motion can still see the items separated but we remove the horizontal gap for the animation 
+        */
+        gap: 0 2rem;
+    }
+
+    .litem {
+        /* REVIEW: Why don't we just take the speed? It works...*/
+        --duration: calc(var(--speed) * 1);
+        --delay: calc((var(--duration) / var(--count)) * (var(--index, 0) - 8));
+        /* We put them all together, on a kind of "stack" on the z axis
+        is the are separated just by the y axis, that's the one we need to move
+        Each item needs to move "down" a different amount and that amount can be calculated as
+        (the total number of items - the index of the item) * 100% (being 100% the height of the item)
+        for example, if we have 6 items, the first item needs to go down (6-0) * 100% = 600% and the last one (6-5) * 100% = 100% (just one position)
+        Then we have the inset, that moves the items x more positions down
+        */
+        translate: 0%
+            calc(((var(--count) - var(--index)) + var(--inset, 0)) * 100%);
+
+        /* 
+        The keyfrom defines the states (snapshots) of the animation. The animation defines how to go from one state to the next.
+        If you are having problems understanding it, try just this simpler example:
+        animation: slide var(--duration)
+        */
+
+        /* 
+        If we remove the delay, all the items will move together.
+        */
+        /* 
+        REVIEW: If we add the delay, the items will move one after the other, but the interesting part is that the first "snapshot" will have each item in a different position as if they were already moving --> That can be done with negative delays
+
+        REVIEW: THIS IS DUE TO HOW THE DELAY WORKS! Delays can be positive (making the element "wait" before starting the animation) or negative (making the element be where it would be at that time of the animation - as if that time had already passed)
+        */
+
+        /* 
+        REVIEW: why remove infinite moves only the first three items?
+        Because we are using negative delays to position the first snapshot of the animation, so the first three items will be positioned where they were supposed to be at that time of the animation - again: as if that time had already passed. For those 3 first items, at that time they would have already moved to the end of the animation, so they will not move anymore!
+        */
+        animation: slide var(--duration) var(--delay) linear infinite;
+    }
+    .litem:hover {
+        --active: 1;
+    }
+    /* REVIEW: I like the idea of keep keyframes for specific components out of the tailwind config file */
+    /* 
+    
+    
+    */
+    @keyframes slide {
+        100% {
+            /* 
+            The y axis was the one we moved down, so now we need to move it up.
+            By how much? Depends on the item and the outset. The outset determines how much further the item will go up. 
+            */
+            translate: 0% calc(calc((var(--index) + var(--outset, 0)) * -100%));
+        }
+    }
+}
+
+/* TODO:
+Why is he using the approach of puttin all the elements in the same place and then moving them, instead of moving the elements from they were as a grid? It's just a matter of preference? is it easier to think about them as if they were coming from the same place and just departing from there at different times?
+
+
+*/
+
+/* REVIEW: Changing this to styles of the element may break it when there is no js */
+/* .litem:nth-of-type(1) {
+    --index: 0;
+}
+.litem:nth-of-type(2) {
+    --index: 0;
+}
+.litem:nth-of-type(3) {
+    --index: 1;
+}
+.litem:nth-of-type(4) {
+    --index: 1;
+}
+.litem:nth-of-type(5) {
+    --index: 2;
+}
+.litem:nth-of-type(6) {
+    --index: 2;
+}
+.litem:nth-of-type(7) {
+    --index: 3;
+}
+.litem:nth-of-type(8) {
+    --index: 3;
+}
+.litem:nth-of-type(9) {
+    --index: 4;
+}
+.litem:nth-of-type(10) {
+    --index: 4;
+}
+.litem:nth-of-type(11) {
+    --index: 5;
+}
+.litem:nth-of-type(12) {
+    --index: 5;
+} */

@@ -6,14 +6,19 @@ export const config = {
         private: {
             app: '/app',
         },
+
         /**
-         * This is the prefix for all the auth pages (login, register, etc)
+         * An array of routes that are used for the auth
+         * @type {string[]}
          */
         auth: ['/auth/signin', '/auth/signup'],
+
         /**
          * This is the prefix for all the auth api routes
+         * @type {string}
          */
         apiRouteAuthPrefix: '/api/auth',
+
         /**
          * This is the page where the user will be redirected after login
          */

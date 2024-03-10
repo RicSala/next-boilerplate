@@ -5,7 +5,7 @@
 -   Delete the git folder `rm -rf .git` (this will delete the link with this remote and the history)
 -   Init a new git project `git init`
 -   Open the project on VSC `code .`
--   Stage and commit the project `git add . && git -m commit "First commit"`
+-   Stage and commit the project `git add . && git commit -m "First commit"`
 -   Install dependencies `npm i`
 -   Create the .env file based on the .env.template file
 

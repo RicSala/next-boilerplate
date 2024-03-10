@@ -21,9 +21,17 @@ import { toast } from 'sonner';
 import { Computer } from 'lucide-react';
 import { registerFormSchema } from '@/schemas/auth-schemas';
 import { Message } from './message';
-import { useState } from 'react';
+import { useState, useTransition } from 'react';
+import { config } from '@/config/shipper.config';
+import { Social } from './social';
+import { useSearchParams } from 'next/navigation';
+import { TStatus } from '@/types/types';
 
 export function RegisterForm({}) {
+    const query = useSearchParams();
+    const callbackUrl = query.get('callbackUrl');
+    const [status, setStatus] = useState<TStatus>('idle');
+
     const form = useForm({
         resolver: zodResolver(registerFormSchema),
         defaultValues: {
@@ -37,6 +45,7 @@ export function RegisterForm({}) {
     const [error, setError] = useState<string | null>(null);
 
     const onSubmit = async (values: z.infer<typeof registerFormSchema>) => {
+        setStatus('loading');
         const body: RegisterReq<'CREATE'> = {
             action: 'CREATE',
             data: {
@@ -52,6 +61,9 @@ export function RegisterForm({}) {
                 signIn('credentials', {
                     email: values.email,
                     password: values.password,
+                    callbackUrl:
+                        // Send the user to where he was before or the default route
+                        callbackUrl || config.routes.defaultLogingRedirect,
                 });
             })
             .then(() => {
@@ -63,6 +75,9 @@ export function RegisterForm({}) {
                 // @ts-ignore
                 setError(error.response.data.error);
                 toast.error('Error al crear la cuenta', {});
+            })
+            .finally(() => {
+                setStatus('idle');
             });
     };
 
@@ -154,10 +169,10 @@ export function RegisterForm({}) {
                     <Message message={error} variant={'error'} />
                     <Button
                         type='submit'
-                        disabled={form.formState.isSubmitting}
+                        disabled={status === 'loading'}
                         className='w-full'
                     >
-                        {form.formState.isSubmitting ? (
+                        {status === 'loading' ? (
                             <div className='flex flex-row gap-2'>
                                 Registrando
                             </div>
@@ -167,27 +182,8 @@ export function RegisterForm({}) {
                     </Button>
                 </form>
             </Form>
-
             <Separator />
-            <div className='flex flex-col items-center space-y-2'>
-                <h4>También puedes acceder con</h4>
-                <Button
-                    variant='outline'
-                    className='w-full'
-                    onClick={async () => {
-                        const res = await signIn('google', {
-                            redirect: false,
-                        });
-
-                        console.log({ res });
-                    }}
-                >
-                    {
-                        //TODO: review callback después de logearse con google
-                    }
-                    Google
-                </Button>
-            </div>
+            <Social />
         </div>
     );
 }

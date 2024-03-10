@@ -3,31 +3,34 @@ import { cn } from '@/lib/utils';
 type HighlightProps = {
     children: React.ReactNode;
     className?: string;
+    color?: HighlightColors;
 };
 
-export default function Highlight({ children, className }: HighlightProps) {
+const hightlightColorMap = {
+    green: 'bg-[linear-gradient(to_right,_rgb(0_255_171_/_10%),_rgb(0_255_46_/_70%)_4%,_rgb(0_255_125_/_30%)_)]',
+    yellow: 'bg-[linear-gradient(to_right,_rgb(255_255_0_/_10%),_rgb(255_255_0_/_70%)_4%,_rgb(255_255_0_/_30%)_)]',
+    red: 'bg-[linear-gradient(to_right,_rgb(255_0_0_/_10%),_rgb(255_0_0_/_70%)_4%,_rgb(255_0_0_/_30%)_)]',
+    blue: 'bg-[linear-gradient(to_right,_rgb(0_0_255_/_10%),_rgb(0_0_255_/_70%)_4%,_rgb(0_0_255_/_30%)_)]',
+    purple: 'bg-[linear-gradient(to_right,_rgb(255_0_255_/_10%),_rgb(255_0_255_/_70%)_4%,_rgb(255_0_255_/_30%)_)]',
+};
+
+type HighlightColors = keyof typeof hightlightColorMap;
+
+export default function Highlight({
+    children,
+    color = 'yellow',
+    className,
+}: HighlightProps) {
     return (
-        <span
+        <mark
             className={cn(
-                `
-      relative
-      font-semibold
-      text-opacity-100
-      [font-size:inherit]
-    before:absolute
-    before:-left-[2px]
-    before:bottom-0
-    before:-z-[1]
-    before:h-[70%]
-    before:w-[calc(100%_+_4px)]
-    before:bg-indigo-200
-    before:content-['']
-    before:[transform:rotate(-2deg)]
-                  `,
+                `px-[0.4em] py-[0.1em] -mx-[0.4em] rounded-[0.8em_0.3em] bg-transparent  box-decoration-clone
+            [-webkit-box-decoration-break:clone]`,
+                hightlightColorMap[color],
                 className
             )}
         >
             {children}
-        </span>
+        </mark>
     );
 }

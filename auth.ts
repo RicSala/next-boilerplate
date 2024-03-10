@@ -1,14 +1,13 @@
 // REVIEW:
-// @ts-nocheck
 
 import NextAuth, { NextAuthConfig } from 'next-auth';
 import { authMiddlewareOptions } from '@/auth.middleware.config';
 import { getUserByEmail } from './actions/getUser';
 import { db } from './lib/prisma';
 import { PrismaAdapter } from '@auth/prisma-adapter';
-import GoogleProvider from '@auth/core/providers/google';
-import CredentialsProvider from '@auth/core/providers/credentials';
-import EmailProvider from '@auth/core/providers/email';
+import GoogleProvider from 'next-auth/providers/google';
+import CredentialsProvider from 'next-auth/providers/credentials';
+import EmailProvider from 'next-auth/providers/nodemailer';
 import { config } from './config/shipper.config';
 import bcrypt from 'bcryptjs';
 
@@ -26,28 +25,32 @@ export const authOptions = {
                 password: { label: 'Password', type: 'password' },
             },
             async authorize(credentials) {
+                console.log('credentials*** email', credentials);
                 if (!credentials?.email || !credentials?.password) {
-                    throw new Error('Missing credentials');
+                    return null;
                 }
+                const user = await getUserByEmail(credentials.email as string);
 
-                const user = await getUserByEmail(credentials.email);
-
+                console.log('credentials*** !user', credentials);
                 if (!user || !user?.hashedPassword) {
-                    throw new Error('Invalid credentials Custom');
+                    return null;
                 }
 
                 const isCorrectPassword = await bcrypt.compare(
-                    credentials.password,
+                    credentials.password as string,
                     user.hashedPassword
                 );
 
+                console.log('credentials*** isCorrect', credentials, {
+                    isCorrectPassword,
+                });
                 if (!isCorrectPassword) {
                     console.log(
-                        'Invalid credentials Custom',
+                        'Invalid credentials*** Custom',
                         isCorrectPassword
                     );
                     console.log('credentials.password', credentials.password);
-                    throw new Error('Invalid credentials Custom');
+                    return null;
                 }
 
                 //REVIEW: does this mean we are gonna have the whole user object in the session
@@ -71,9 +74,10 @@ export const authOptions = {
 
     // custom pages
     pages: {
-        signIn: '/',
-        newUser: '/', // New users will be directed here on first sign in
-        error: '/auth/error',
+        signIn: '/auth/signin', // This is the page that will be shown when the user is not signed in
+        // newUser: '/', // New users will be directed here on first sign in
+        // Careful, if you add this property, the callbackUrl of the signIn method will be include as a query parameter instead of used as the callbackUrl
+        // error: '/error/signin',
     },
 
     debug: process.env.NODE_ENV === 'development', // Set to true to display debug messages
@@ -102,6 +106,7 @@ export const authOptions = {
     callbacks: {
         // to control if a user is allowed to sign in.
         async signIn({ user, account, profile, email, credentials }) {
+            // REVIEW: why "trigger" is undefined here? we should have a trigger property: https://authjs.dev/reference/core/types#callbacksoptionsp-a
             console.log('from signin', { user });
             console.log('from signin', { account });
             console.log('from signin', { profile });
@@ -118,13 +123,13 @@ export const authOptions = {
             }
         },
         // called anytime the user is redirected to a callback URL (e.g. on signin or signout).
-        async redirect({ url, baseUrl }) {
-            // Allows relative callback URLs
-            if (url.startsWith('/')) return `${baseUrl}${url}`;
-            // Allows callback URLs on the same origin
-            else if (new URL(url).origin === baseUrl) return url;
-            return baseUrl;
-        },
+        // async redirect({ url, baseUrl }) {
+        //     // Allows relative callback URLs
+        //     if (url.startsWith('/')) return `${baseUrl}${url}`;
+        //     // Allows callback URLs on the same origin
+        //     else if (new URL(url).origin === baseUrl) return url;
+        //     return baseUrl;
+        // },
 
         // This callback is called whenever a JSON Web Token is created (i.e. at sign in) or
         // updated (i.e whenever a session is accessed in the client). The returned value will be encrypted,
@@ -138,10 +143,10 @@ export const authOptions = {
             // console.log({ account });
             // console.log({ profile });
             // console.log({ session });
-            // console.log({ trigger });
+            // console.log({ trigger }); // Only works for database sessions
 
             // When the user signes in for the first time, we want to add some extra information to the token
-            if (user) {
+            if (user && user.id) {
                 token.id = user.id;
                 token.email = user.email;
                 token.name = user.name;
@@ -174,16 +179,27 @@ export const authOptions = {
         },
     },
 
-    // We also have "events"
-    // what's the difference between callbacks and events?
-    // callbacks modify the default behavior, events can be used to add on top of the default behavior
-    // async signIn(message) { /* on successful sign in */ },
-    // async signOut(message) { /* on signout */ },
-    // async createUser(message) { /* user created */ },
-    // async updateUser(message) { /* user updated - e.g. their email was verified */ },
-    // async linkAccount(message) { /* account (e.g. Twitter) linked to a user */ },
-    // async session(message) { /* session is active */ },
+    events: {
+        // We also have "events"
+        // what's the difference between callbacks and events?
+        // callbacks modify the default behavior, events can be used to add on top of the default behavior
+        // async signIn(message) { /* on successful sign in */ },
+        // async signOut(message) { /* on signout */ },
+        async signIn(message) {
+            console.log('from sigin', { message });
+            // REVIEW: why trigger is not available here either???
+            /* user created */
+        },
 
+        async createUser(message) {
+            console.log('from createUser', { message });
+            /* user created */
+        },
+
+        // async updateUser(message) { /* user updated - e.g. their email was verified */ },
+        // async linkAccount(message) { /* account (e.g. Twitter) linked to a user */ },
+        // async session(message) { /* session is active */ },
+    },
     // https://dev.to/mfts/how-to-send-a-warm-welcome-email-with-resend-next-auth-and-react-email-576f
     // events: {
     //     async createUser(message) {
@@ -207,7 +223,7 @@ export const {
     auth,
     signIn,
     signOut,
-    update,
+    unstable_update,
 } = NextAuth({
     ...authMiddlewareOptions,
     ...authOptions,

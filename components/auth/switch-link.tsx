@@ -1,5 +1,7 @@
+'use client';
 import { cn } from '@/lib/utils';
 import Link from 'next/link';
+import { useSearchParams } from 'next/navigation';
 
 type SwitchLinkProps = {
     signIn?: boolean;
@@ -14,6 +16,12 @@ export function SwitchLink({
     resetPassword,
     className,
 }: SwitchLinkProps) {
+    // get all the query params
+    const query = useSearchParams();
+    const signUpUrl = `/auth/signup?${query.toString()}`;
+    const signInUrl = `/auth/signin?${query.toString()}`;
+    const resetPasswordUrl = `/auth/reset-password?${query.toString()}`;
+
     return (
         <div className={cn(``, className)}>
             {signUp && (
@@ -21,7 +29,7 @@ export function SwitchLink({
                     ¿No tienes cuenta?{' '}
                     <Link
                         className='font-medium text-indigo-500 hover:text-indigo-600 dark:hover:text-indigo-400'
-                        href='/auth/signup'
+                        href={signUpUrl}
                     >
                         Regístrate
                     </Link>
@@ -32,7 +40,7 @@ export function SwitchLink({
                     ¿Has olvidado tu contraseña?{' '}
                     <Link
                         className='font-medium text-indigo-500 hover:text-indigo-600 dark:hover:text-indigo-400'
-                        href='/auth/reset-password'
+                        href={resetPasswordUrl}
                     >
                         Recupérala
                     </Link>
@@ -44,7 +52,7 @@ export function SwitchLink({
                     ¿Ya tienes cuenta?{' '}
                     <Link
                         className='font-medium text-indigo-500 hover:text-indigo-600 dark:hover:text-indigo-400'
-                        href='/auth/signin'
+                        href={signInUrl}
                     >
                         Entra
                     </Link>

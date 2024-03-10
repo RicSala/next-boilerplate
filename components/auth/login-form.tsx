@@ -17,7 +17,10 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { CardWrapper } from '../shared/card-wrapper';
 import { signInFormSchema } from '@/schemas/auth-schemas';
-import { signIn, useSession } from 'next-auth/react';
+import { signIn } from 'next-auth/react';
+import { config } from '@/config/shipper.config';
+import { useSearchParams } from 'next/navigation';
+import { type } from 'os';
 
 export function LoginForm({}) {
     const form = useForm({
@@ -28,13 +31,25 @@ export function LoginForm({}) {
         },
     });
 
-    const onSubmit = async (values: z.infer<typeof signInFormSchema>) => {
-        const res = await signIn('credentials', {
-            ...values,
-            callbackUrl: `${window.location.origin}`,
-        });
+    // get the callbackUrl from query params
+    const query = useSearchParams();
+    const callbackUrl = query.get('callbackUrl');
+    const error = query.get('error');
 
-        console.log(res);
+    const onSubmit = async (values: z.infer<typeof signInFormSchema>) => {
+        try {
+            const res = await signIn('credentials', {
+                ...values,
+                redirect: true,
+                // callbackUrl:
+                // Send the user to where he was before or the default route
+                // callbackUrl || config.routes.defaultLogingRedirect,
+            });
+
+            console.log(res);
+        } catch (error) {
+            console.log(error);
+        }
     };
 
     return (
@@ -104,6 +119,33 @@ export function LoginForm({}) {
                     </Button>
                 </form>
             </Form>
+            <SignInError error={error as TSigninErrors} />
         </CardWrapper>
     );
 }
+
+const errors = {
+    Signin: 'Error al iniciar sesión',
+    OAuthSignin: 'Error al iniciar sesión',
+    OAuthCallback: 'Error al iniciar sesión',
+    OAuthCreateAccount: 'Error al iniciar sesión',
+    EmailCreateAccount: 'Error al iniciar sesión',
+    CallbackRouteError: 'Error al iniciar sesión',
+    OAuthAccountNotLinked:
+        'To confirm your identity, sign in with the same account you used originally.',
+    EmailSignin: 'Check your email address.',
+    CredentialsSignin:
+        'Sign in failed. Check the details you provided are correct.',
+    default: 'Unable to sign in.',
+};
+
+type TSigninErrors = keyof typeof errors;
+
+type SignInErrorProps = {
+    error: string;
+};
+const SignInError = ({ error }: SignInErrorProps) => {
+    const errorMessage =
+        error && (errors[error as TSigninErrors] ?? errors.default);
+    return <div>{errorMessage}</div>;
+};

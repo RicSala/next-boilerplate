@@ -8,6 +8,7 @@ export const secondaryFont = Bricolage_Grotesque({
     subsets: ['latin'],
     variable: '--font-grotesque',
     display: 'swap',
+    adjustFontFallback: false,
 });
 
 export const handwritten = Indie_Flower({
