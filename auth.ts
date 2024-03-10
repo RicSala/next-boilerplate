@@ -7,7 +7,7 @@ import { db } from './lib/prisma';
 import { PrismaAdapter } from '@auth/prisma-adapter';
 import GoogleProvider from 'next-auth/providers/google';
 import CredentialsProvider from 'next-auth/providers/credentials';
-import EmailProvider from 'next-auth/providers/email';
+import EmailProvider from 'next-auth/providers/nodemailer';
 import { config } from './config/shipper.config';
 import bcrypt from 'bcryptjs';
 
@@ -77,7 +77,7 @@ export const authOptions = {
         signIn: '/auth/signin', // This is the page that will be shown when the user is not signed in
         // newUser: '/', // New users will be directed here on first sign in
         // Careful, if you add this property, the callbackUrl of the signIn method will be include as a query parameter instead of used as the callbackUrl
-        // error: '/error/signin',
+        error: '/auth/signin',
     },
 
     debug: process.env.NODE_ENV === 'development', // Set to true to display debug messages
