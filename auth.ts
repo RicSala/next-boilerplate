@@ -31,8 +31,9 @@ export const authOptions = {
                 }
                 const user = await getUserByEmail(credentials.email as string);
 
-                console.log('credentials*** !user', credentials);
+                // console.log('credentials*** !user', credentials);
                 if (!user || !user?.hashedPassword) {
+                    console.log('Invalid credentials*** Custom', user);
                     return null;
                 }
 
@@ -77,7 +78,7 @@ export const authOptions = {
         signIn: '/auth/signin', // This is the page that will be shown when the user is not signed in
         // newUser: '/', // New users will be directed here on first sign in
         // Careful, if you add this property, the callbackUrl of the signIn method will be include as a query parameter instead of used as the callbackUrl
-        error: '/auth/signin',
+        error: '/auth/error',
     },
 
     debug: process.env.NODE_ENV === 'development', // Set to true to display debug messages
@@ -107,9 +108,9 @@ export const authOptions = {
         // to control if a user is allowed to sign in.
         async signIn({ user, account, profile, email, credentials }) {
             // REVIEW: why "trigger" is undefined here? we should have a trigger property: https://authjs.dev/reference/core/types#callbacksoptionsp-a
-            console.log('from signin', { user });
-            console.log('from signin', { account });
-            console.log('from signin', { profile });
+            // console.log('from signin', { user });
+            // console.log('from signin', { account });
+            // console.log('from signin', { profile });
 
             if (account?.provider !== 'email') return true;
 
@@ -185,17 +186,15 @@ export const authOptions = {
         // callbacks modify the default behavior, events can be used to add on top of the default behavior
         // async signIn(message) { /* on successful sign in */ },
         // async signOut(message) { /* on signout */ },
-        async signIn(message) {
-            console.log('from sigin', { message });
-            // REVIEW: why trigger is not available here either???
-            /* user created */
-        },
-
-        async createUser(message) {
-            console.log('from createUser', { message });
-            /* user created */
-        },
-
+        // async signIn(message) {
+        //     console.log('from sigin', { message });
+        //     // REVIEW: why trigger is not available here either???
+        //     /* user created */
+        // },
+        // async createUser(message) {
+        //     console.log('from createUser', { message });
+        //     /* user created */
+        // },
         // async updateUser(message) { /* user updated - e.g. their email was verified */ },
         // async linkAccount(message) { /* account (e.g. Twitter) linked to a user */ },
         // async session(message) { /* session is active */ },

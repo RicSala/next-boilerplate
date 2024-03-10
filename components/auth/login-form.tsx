@@ -41,9 +41,9 @@ export function LoginForm({}) {
             const res = await signIn('credentials', {
                 ...values,
                 redirect: true,
-                // callbackUrl:
-                // Send the user to where he was before or the default route
-                // callbackUrl || config.routes.defaultLogingRedirect,
+                callbackUrl:
+                    // Send the user to where he was before or the default route
+                    callbackUrl || config.routes.defaultLogingRedirect,
             });
 
             console.log(res);
