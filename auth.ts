@@ -7,7 +7,7 @@ import { db } from './lib/prisma';
 import { PrismaAdapter } from '@auth/prisma-adapter';
 import GoogleProvider from 'next-auth/providers/google';
 import CredentialsProvider from 'next-auth/providers/credentials';
-import EmailProvider from 'next-auth/providers/nodemailer';
+import EmailProvider from 'next-auth/providers/email';
 import { config } from './config/shipper.config';
 import bcrypt from 'bcryptjs';
 
