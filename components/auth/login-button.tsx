@@ -1,9 +1,13 @@
 'use client';
 
-import { useRouter } from 'next/navigation';
+import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { Dialog, DialogContent, DialogTrigger } from '../ui/dialog';
 import { LoginForm } from './login-form';
 import { SwitchLink } from './switch-link';
+import { AuthCard } from './AuthCard';
+import { config } from '@/config/shipper.config';
+import { signIn } from 'next-auth/react';
+import { useEffect, useState } from 'react';
 
 type LoginButtonProps = {
     mode: 'modal' | 'redirect';
@@ -11,13 +15,17 @@ type LoginButtonProps = {
 };
 
 export function LoginButton({ mode, children }: LoginButtonProps) {
-    const router = useRouter();
+    const [isOpen, setIsOpen] = useState(false);
+
+    const closeDialog = () => {
+        setIsOpen(false);
+    };
 
     if (mode === 'redirect')
         return (
             <span
                 onClick={() => {
-                    router.push(`/auth/signin`);
+                    signIn();
                 }}
             >
                 {children}
@@ -26,13 +34,10 @@ export function LoginButton({ mode, children }: LoginButtonProps) {
 
     if (mode === 'modal') console.log('modal');
     return (
-        <Dialog>
+        <Dialog open={isOpen} onOpenChange={setIsOpen}>
             <DialogTrigger asChild>{children}</DialogTrigger>
             <DialogContent>
-                <>
-                    <LoginForm />
-                    <SwitchLink signUp resetPassword />
-                </>
+                <AuthCard onAuth={closeDialog} />
             </DialogContent>
         </Dialog>
     );

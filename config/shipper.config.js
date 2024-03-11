@@ -7,11 +7,17 @@ export const config = {
             app: '/app',
         },
 
+        settings: '/settings',
+
         /**
          * An array of routes that are used for the auth
-         * @type {string[]}
+         * @type {{signin: string, signup: string, recover: string}}
          */
-        auth: ['/auth/signin', '/auth/signup'],
+        auth: {
+            signin: '/signin',
+            signup: '/signup',
+            recover: '/recover',
+        },
 
         /**
          * This is the prefix for all the auth api routes
@@ -22,7 +28,7 @@ export const config = {
         /**
          * This is the page where the user will be redirected after login
          */
-        defaultLogingRedirect: '/app/dashboard',
+        defaultLogingRedirect: '/',
     },
 
     general: {
@@ -70,7 +76,7 @@ export const config = {
 
         fromNoReply: 'Shipper <noreply@ricardosala.com>',
 
-        fromAdmin: 'Ricardo at Shipper <ricardo@mg.shipper.com>',
+        fromAdmin: `Ricardo <ricardo@mg.shipper.com>`,
 
         supportEmail: 'ricardo@mg.shipper.com',
 

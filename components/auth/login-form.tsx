@@ -21,8 +21,15 @@ import { signIn } from 'next-auth/react';
 import { config } from '@/config/shipper.config';
 import { useSearchParams } from 'next/navigation';
 import { type } from 'os';
+import { useState } from 'react';
+import { Message } from './message';
 
-export function LoginForm({}) {
+type LoginFormProps = {
+    isRedirected?: boolean;
+    onAuth?: () => void;
+};
+
+export function LoginForm({ isRedirected, onAuth }: LoginFormProps) {
     const form = useForm({
         resolver: zodResolver(signInFormSchema),
         defaultValues: {
@@ -30,6 +37,8 @@ export function LoginForm({}) {
             password: '88888888k',
         },
     });
+
+    const [errorRes, setErrorRes] = useState<string | null>(null);
 
     // get the callbackUrl from query params
     const query = useSearchParams();
@@ -40,25 +49,24 @@ export function LoginForm({}) {
         try {
             const res = await signIn('credentials', {
                 ...values,
-                redirect: true,
+                redirect: isRedirected,
                 callbackUrl:
                     // Send the user to where he was before or the default route
                     callbackUrl || config.routes.defaultLogingRedirect,
             });
 
-            console.log(res);
+            if (res!.error) {
+                setErrorRes(res!.error);
+            } else {
+                onAuth && onAuth();
+            }
         } catch (error) {
             console.log(error);
         }
     };
 
     return (
-        <CardWrapper
-            backButtonLabel='¿No tienes una cuenta?'
-            backButtonHref='/auth/register'
-            headerLabel='Iniciar sesión'
-            showSocial
-        >
+        <>
             <Form {...form}>
                 <form
                     onSubmit={form.handleSubmit(onSubmit)}
@@ -78,7 +86,7 @@ export function LoginForm({}) {
                                     />
                                 </FormControl>
                                 <FormDescription>
-                                    Email con el que te diste de alta en TATTUO
+                                    {`Email con el que te diste de alta en ${config.general.appName}`}
                                 </FormDescription>
                                 <FormMessage />
                             </FormItem>
@@ -99,13 +107,21 @@ export function LoginForm({}) {
                                     />
                                 </FormControl>
                                 <FormDescription>
-                                    Si no la recuerdas, escríbenos a
-                                    hello@tattuo.com.
+                                    {`Si no la recuerdas, escríbenos a
+                                    ${config.email.supportEmail}`}
                                 </FormDescription>
                                 <FormMessage />
                             </FormItem>
                         )}
                     />
+                    <Message
+                        message={
+                            errors[errorRes as TSigninErrors] ||
+                            errors[error as TSigninErrors]
+                        }
+                        variant={'error'}
+                    />
+
                     <Button
                         type='submit'
                         disabled={form.formState.isSubmitting}
@@ -119,12 +135,11 @@ export function LoginForm({}) {
                     </Button>
                 </form>
             </Form>
-            <SignInError error={error as TSigninErrors} />
-        </CardWrapper>
+        </>
     );
 }
 
-const errors = {
+export const errors = {
     Signin: 'Error al iniciar sesión',
     OAuthSignin: 'Error al iniciar sesión',
     OAuthCallback: 'Error al iniciar sesión',
@@ -134,8 +149,7 @@ const errors = {
     OAuthAccountNotLinked:
         'To confirm your identity, sign in with the same account you used originally.',
     EmailSignin: 'Check your email address.',
-    CredentialsSignin:
-        'Sign in failed. Check the details you provided are correct.',
+    CredentialsSignin: 'Error al iniciar sesión. Revisa tus credenciales.',
     default: 'Unable to sign in.',
 };
 

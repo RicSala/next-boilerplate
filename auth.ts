@@ -1,5 +1,6 @@
 // REVIEW:
 
+import { createTransport } from 'nodemailer';
 import NextAuth, { NextAuthConfig } from 'next-auth';
 import { authMiddlewareOptions } from '@/auth.middleware.config';
 import { getUserByEmail } from './actions/getUser';
@@ -10,6 +11,7 @@ import CredentialsProvider from 'next-auth/providers/credentials';
 import EmailProvider from 'next-auth/providers/nodemailer';
 import { config } from './config/shipper.config';
 import bcrypt from 'bcryptjs';
+import { sendEmail } from './lib/mailgun';
 
 export const authOptions = {
     adapter: PrismaAdapter(db),
@@ -61,6 +63,7 @@ export const authOptions = {
         }),
 
         EmailProvider({
+            name: 'email',
             server: {
                 host: process.env.SMTP_HOST,
                 port: Number(process.env.SMTP_PORT),
@@ -70,15 +73,34 @@ export const authOptions = {
                 },
             },
             from: config.email.fromNoReply,
+            async sendVerificationRequest(params) {
+                const {
+                    identifier: email,
+                    url,
+                    token,
+                    provider,
+                    theme,
+                } = params;
+                const { host } = new URL(url);
+
+                await sendEmail(
+                    email,
+                    'Recuperación de contraseña',
+                    'Recupera tu contraseña',
+                    html({ url, host, theme }),
+                    'noreply@test.com'
+                );
+            },
         }),
     ],
 
     // custom pages
     pages: {
-        signIn: '/auth/signin', // This is the page that will be shown when the user is not signed in
+        signIn: '/signin', // This is the page that will be shown when the user is not signed in
         // newUser: '/', // New users will be directed here on first sign in
         // Careful, if you add this property, the callbackUrl of the signIn method will be include as a query parameter instead of used as the callbackUrl
-        error: '/auth/error',
+        error: '/signin',
+        verifyRequest: '/verify',
     },
 
     debug: process.env.NODE_ENV === 'development', // Set to true to display debug messages
@@ -224,6 +246,52 @@ export const {
     signOut,
     unstable_update,
 } = NextAuth({
-    ...authMiddlewareOptions,
+    // ...authMiddlewareOptions,
     ...authOptions,
 });
+
+function html(params: { url: string; host: string; theme: any }) {
+    const { url, host, theme } = params;
+
+    const brandColor = theme.brandColor || '#346df1';
+    const color = {
+        background: '#f9f9f9',
+        text: '#444',
+        mainBackground: '#fff',
+        buttonBackground: brandColor,
+        buttonBorder: brandColor,
+        buttonText: theme.buttonText || '#fff',
+    };
+
+    return `
+  <body style="background: ${color.background};">
+    <table width="100%" border="0" cellspacing="20" cellpadding="0"
+      style="background: ${color.mainBackground}; max-width: 600px; margin: auto; border-radius: 10px;">
+      <tr>
+        <td align="center"
+          style="padding: 10px 0px; font-size: 22px; font-family: Helvetica, Arial, sans-serif; color: ${color.text};">
+          Entra en <strong>${config.general.appName}</strong>
+        </td>
+      </tr>
+      <tr>
+        <td align="center" style="padding: 20px 0;">
+          <table border="0" cellspacing="0" cellpadding="0">
+            <tr>
+              <td align="center" style="border-radius: 5px;" bgcolor="${color.buttonBackground}"><a href="${url}"
+                  target="_blank"
+                  style="font-size: 18px; font-family: Helvetica, Arial, sans-serif; color: ${color.buttonText}; text-decoration: none; border-radius: 5px; padding: 10px 20px; border: 1px solid ${color.buttonBorder}; display: inline-block; font-weight: bold;">Sign
+                  in</a></td>
+            </tr>
+          </table>
+        </td>
+      </tr>
+      <tr>
+        <td align="center"
+          style="padding: 0px 0px 10px 0px; font-size: 16px; line-height: 22px; font-family: Helvetica, Arial, sans-serif; color: ${color.text};">
+          If you did not request this email you can safely ignore it.
+        </td>
+      </tr>
+    </table>
+  </body>
+  `;
+}

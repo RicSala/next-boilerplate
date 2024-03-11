@@ -14,12 +14,14 @@ import { Newsletter } from '@/components/marketing/newsletter';
 import CtaWithSocial from '@/components/marketing/cta-with-social';
 import { auth } from '@/auth';
 import { LoginButton } from '@/components/auth/login-button';
+import { AuthCard } from '@/components/auth/AuthCard';
 
 export default async function Home() {
     const session = await auth();
 
     return (
         <div className='gap flex flex-col items-center justify-between'>
+            <AuthCard initialView='signin' showSocial />
             <Button>Button</Button>
             <LoginButton mode='modal'>
                 <Button>Entrar</Button>

@@ -1,3 +1,10 @@
+import type {
+    AspectRatio,
+    Position,
+    Prisma,
+    PrismaClient,
+} from '@prisma/client';
+
 export type HttpStatusCode = 200 | 201 | 400 | 401 | 404 | 500; // Extend as needed
 
 export type PaginationInfo = {
@@ -54,3 +61,20 @@ export type ApiRequestBody<
 };
 
 export type TStatus = 'idle' | 'loading' | 'success' | 'error';
+
+export type TAuthCardViews = 'signin' | 'signup' | 'recover';
+
+type ModelNames = Prisma.ModelName; // Union Type with the names of all Models: "User" | "Post"...
+
+export type PrismaModels = {
+    // ...where each key is a ModelName...
+    [M in ModelNames]: Exclude<
+        // ...and each value is the awaited return type of the findUnique method of the PrismaClient of the corresponding model
+        Awaited<ReturnType<PrismaClient[Uncapitalize<M>]['findUnique']>>,
+        null //..excluding null
+    >;
+};
+
+export type TMode = 'light' | 'dark';
+
+export type Pure<T> = Omit<T, 'createdAt' | 'updatedAt'>;

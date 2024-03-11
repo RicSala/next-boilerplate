@@ -27,9 +27,19 @@ import { Social } from './social';
 import { useSearchParams } from 'next/navigation';
 import { TStatus } from '@/types/types';
 
-export function RegisterForm({}) {
+type RegisterFormProps = {
+    callbackUrl?: string;
+    isRedirected?: boolean;
+    onAuth?: () => void;
+};
+
+export function RegisterForm({
+    callbackUrl: callbakUrlProp,
+    isRedirected,
+    onAuth,
+}: RegisterFormProps) {
     const query = useSearchParams();
-    const callbackUrl = query.get('callbackUrl');
+    const callbackUrl = query.get('callbackUrl') || callbakUrlProp;
     const [status, setStatus] = useState<TStatus>('idle');
 
     const form = useForm({
@@ -61,6 +71,7 @@ export function RegisterForm({}) {
                 signIn('credentials', {
                     email: values.email,
                     password: values.password,
+                    redirect: isRedirected,
                     callbackUrl:
                         // Send the user to where he was before or the default route
                         callbackUrl || config.routes.defaultLogingRedirect,
@@ -68,6 +79,7 @@ export function RegisterForm({}) {
             })
             .then(() => {
                 toast.success('Cuenta creada con éxito', {});
+                onAuth && onAuth();
             })
             .catch((error) => {
                 // @ts-ignore
@@ -82,108 +94,99 @@ export function RegisterForm({}) {
     };
 
     return (
-        <div className='flex flex-col gap-4'>
-            <Form {...form}>
-                <form
-                    onSubmit={form.handleSubmit(onSubmit)}
-                    className='space-y-5'
-                >
-                    <FormField
-                        control={form.control}
-                        name='email'
-                        render={({ field }) => (
-                            <FormItem>
-                                <FormLabel>e-mail</FormLabel>
-                                <FormControl>
-                                    <Input
-                                        placeholder='Aquí va tu email'
-                                        {...field}
-                                    />
-                                </FormControl>
-                                {/* <FormDescription>
+        <Form {...form}>
+            <form onSubmit={form.handleSubmit(onSubmit)} className='space-y-5'>
+                <FormField
+                    control={form.control}
+                    name='email'
+                    render={({ field }) => (
+                        <FormItem>
+                            <FormLabel>e-mail</FormLabel>
+                            <FormControl>
+                                <Input
+                                    placeholder='Aquí va tu email'
+                                    {...field}
+                                />
+                            </FormControl>
+                            {/* <FormDescription>
                                         Email con el que te diste de alta en TATTUO
                                     </FormDescription> */}
-                                <FormMessage />
-                            </FormItem>
-                        )}
-                    />
-                    <FormField
-                        control={form.control}
-                        name='name'
-                        render={({ field }) => (
-                            <FormItem>
-                                <FormLabel>Nombre</FormLabel>
-                                <FormControl>
-                                    <Input
-                                        placeholder='Aquí va tu nombre'
-                                        {...field}
-                                    />
-                                </FormControl>
-                                {/* <FormDescription>
+                            <FormMessage />
+                        </FormItem>
+                    )}
+                />
+                <FormField
+                    control={form.control}
+                    name='name'
+                    render={({ field }) => (
+                        <FormItem>
+                            <FormLabel>Nombre</FormLabel>
+                            <FormControl>
+                                <Input
+                                    placeholder='Aquí va tu nombre'
+                                    {...field}
+                                />
+                            </FormControl>
+                            {/* <FormDescription>
                                         Para hacer todo un poco más personal!
                                     </FormDescription> */}
-                                <FormMessage />
-                            </FormItem>
-                        )}
-                    />
-                    <FormField
-                        control={form.control}
-                        name='password'
-                        render={({ field }) => (
-                            <FormItem>
-                                <FormLabel>Contraseña</FormLabel>
-                                <FormControl>
-                                    <Input
-                                        placeholder='Aquí va tu contraseña'
-                                        {...field}
-                                        type='password'
-                                    />
-                                </FormControl>
-                                {/* <FormDescription>
+                            <FormMessage />
+                        </FormItem>
+                    )}
+                />
+                <FormField
+                    control={form.control}
+                    name='password'
+                    render={({ field }) => (
+                        <FormItem>
+                            <FormLabel>Contraseña</FormLabel>
+                            <FormControl>
+                                <Input
+                                    placeholder='Aquí va tu contraseña'
+                                    {...field}
+                                    type='password'
+                                />
+                            </FormControl>
+                            {/* <FormDescription>
                                         Si no la recuerdas, escríbenos a hello@tattuo.com.
                                     </FormDescription> */}
-                                <FormMessage />
-                            </FormItem>
-                        )}
-                    />
-                    <FormField
-                        control={form.control}
-                        name='confirmPassword'
-                        render={({ field }) => (
-                            <FormItem>
-                                <FormLabel>Confirma tu contraseña</FormLabel>
-                                <FormControl>
-                                    <Input
-                                        placeholder='Aquí va tu contraseña'
-                                        {...field}
-                                        type='password'
-                                    />
-                                </FormControl>
-                                {/* <FormDescription>
+                            <FormMessage />
+                        </FormItem>
+                    )}
+                />
+                <FormField
+                    control={form.control}
+                    name='confirmPassword'
+                    render={({ field }) => (
+                        <FormItem>
+                            <FormLabel>Confirma tu contraseña</FormLabel>
+                            <FormControl>
+                                <Input
+                                    placeholder='Aquí va tu contraseña'
+                                    {...field}
+                                    type='password'
+                                />
+                            </FormControl>
+                            {/* <FormDescription>
                                         Así te aseguras que la has escrito bien.
                                     </FormDescription> */}
-                                <FormMessage />
-                            </FormItem>
-                        )}
-                    />
-                    <Message message={error} variant={'error'} />
-                    <Button
-                        type='submit'
-                        disabled={status === 'loading'}
-                        className='w-full'
-                    >
-                        {status === 'loading' ? (
-                            <div className='flex flex-row gap-2'>
-                                Registrando
-                            </div>
-                        ) : (
-                            `Registrar`
-                        )}
-                    </Button>
-                </form>
-            </Form>
-            <Separator />
-            <Social />
-        </div>
+                            <FormMessage />
+                        </FormItem>
+                    )}
+                />
+                <Message message={error} variant={'error'} />
+                <Button
+                    type='submit'
+                    disabled={status === 'loading'}
+                    className='w-full'
+                >
+                    {status === 'loading' ? (
+                        <div className='flex flex-row gap-2'>Registrando</div>
+                    ) : (
+                        `Registrar`
+                    )}
+                </Button>
+            </form>
+        </Form>
     );
 }

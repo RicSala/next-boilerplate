@@ -24,9 +24,6 @@ export default function SignIn() {
                             <LoginForm />
                             {/* Footer */}
                             <SwitchLink signUp resetPassword />
-                            <div className='mt-5'>
-                                <Message message='To support you during the pandemic super pro features are free until March 31st.' />
-                            </div>
                         </div>
                     </div>
                 </div>

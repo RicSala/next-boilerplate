@@ -20,9 +20,6 @@ export const sendEmail = async (
     html: string,
     replyTo: string
 ) => {
-    console.log('sending email');
-    console.log(mg);
-    console.log(process.env.NEXT_PUBLIC_MAILGUN_API_KEY);
     const data = {
         from: config.email.fromAdmin,
         to: [to],

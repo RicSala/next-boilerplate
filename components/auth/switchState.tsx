@@ -3,15 +3,16 @@ import { config } from '@/config/shipper.config';
 import { cn } from '@/lib/utils';
 import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
+import { Button } from '../ui/button';
 
 type SwitchLinkProps = {
-    signIn?: boolean;
-    signUp?: boolean;
-    resetPassword?: boolean;
+    signIn?: () => void;
+    signUp?: () => void;
+    resetPassword?: () => void;
     className?: string;
 };
 
-export function SwitchLink({
+export function SwitchState({
     signIn,
     signUp,
     resetPassword,
@@ -26,34 +27,37 @@ export function SwitchLink({
             {signUp && (
                 <div className='text-sm'>
                     ¿No tienes cuenta?{' '}
-                    <Link
+                    <Button
+                        variant={'link'}
                         className='font-medium text-indigo-500 hover:text-indigo-600 dark:hover:text-indigo-400'
-                        href={`${signup}?${query.toString()}`}
+                        onClick={signUp}
                     >
                         Regístrate
-                    </Link>
+                    </Button>
                 </div>
             )}
             {resetPassword && (
                 <div className='text-sm'>
                     ¿Has olvidado tu contraseña?{' '}
-                    <Link
+                    <Button
+                        variant={'link'}
                         className='font-medium text-indigo-500 hover:text-indigo-600 dark:hover:text-indigo-400'
-                        href={`${recover}?${query.toString()}`}
+                        onClick={resetPassword}
                     >
-                        Recupérala
-                    </Link>
+                        Recuperala
+                    </Button>
                 </div>
             )}
             {signIn && (
                 <div className='text-sm'>
                     ¿Ya tienes cuenta?{' '}
-                    <Link
+                    <Button
+                        variant={'link'}
                         className='font-medium text-indigo-500 hover:text-indigo-600 dark:hover:text-indigo-400'
-                        href={`${signin}?${query.toString()}`}
+                        onClick={signIn}
                     >
                         Entra
-                    </Link>
+                    </Button>
                 </div>
             )}
         </div>
