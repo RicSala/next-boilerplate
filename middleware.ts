@@ -1,7 +1,7 @@
 // middleware works on the edge, and prisma is not available on the edge, so we need to provide a custom config for the middleware
 import { authMiddlewareOptions } from '@/auth.middleware.config';
 import NextAuth from 'next-auth';
-import { appConfig } from '@/config/shipper.config';
+import { appConfig } from '@/config/shipper.appconfig';
 
 const { auth } = NextAuth(authMiddlewareOptions);
 

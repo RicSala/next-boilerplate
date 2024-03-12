@@ -20,7 +20,7 @@ import { resetPasswordFormSchema } from '@/schemas/auth-schemas';
 import { Message } from './message';
 import { resetPassword } from '@/actions/auth';
 import { useState } from 'react';
-import { appConfig } from '@/config/shipper.config';
+import { appConfig } from '@/config/shipper.appconfig';
 
 export type TResetPasswordSchema = z.infer<typeof resetPasswordFormSchema>;
 

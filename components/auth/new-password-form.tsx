@@ -19,7 +19,7 @@ import { newPasswordFormSchema } from '@/schemas/auth-schemas';
 import { Message } from './message';
 import { newPassword } from '@/actions/auth';
 import { useState } from 'react';
-import { appConfig } from '@/config/shipper.config';
+import { appConfig } from '@/config/shipper.appconfig';
 import { useSearchParams } from 'next/navigation';
 
 export type TNewPasswordSchema = z.infer<typeof newPasswordFormSchema>;

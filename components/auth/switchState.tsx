@@ -3,7 +3,7 @@ import { cn } from '@/lib/utils';
 import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
 import { Button } from '../ui/button';
-import { appConfig } from '@/config/shipper.config';
+import { appConfig } from '@/config/shipper.appconfig';
 
 type SwitchLinkProps = {
     signIn?: () => void;

@@ -1,5 +1,5 @@
 import { cn } from '@/lib/utils';
-import { appConfig } from '@/config/shipper.config';
+import { appConfig } from '@/config/shipper.appconfig';
 // import Highlight from '../utils/highlight';
 import { getStripeInstance } from '@/lib/stripe';
 import FeaturedLogo from '../icons/featured-logo';

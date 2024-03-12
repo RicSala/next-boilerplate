@@ -4,7 +4,7 @@ import { Separator } from '@radix-ui/react-separator';
 import { getProviders, signIn } from 'next-auth/react';
 import { Button } from '../ui/button';
 import { useSearchParams } from 'next/navigation';
-import { appConfig } from '@/config/shipper.config';
+import { appConfig } from '@/config/shipper.appconfig';
 import { useEffect } from 'react';
 
 export function Social({}) {

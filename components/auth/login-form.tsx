@@ -22,7 +22,7 @@ import { useSearchParams } from 'next/navigation';
 import { type } from 'os';
 import { useState } from 'react';
 import { Message } from './message';
-import { appConfig } from '@/config/shipper.config';
+import { appConfig } from '@/config/shipper.appconfig';
 
 type LoginFormProps = {
     isRedirected?: boolean;

@@ -25,7 +25,7 @@ import { useState, useTransition } from 'react';
 import { Social } from './social';
 import { useSearchParams } from 'next/navigation';
 import { TStatus } from '@/types/types';
-import { appConfig } from '@/config/shipper.config';
+import { appConfig } from '@/config/shipper.appconfig';
 
 type RegisterFormProps = {
     callbackUrl?: string;

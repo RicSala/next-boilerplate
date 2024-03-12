@@ -1,7 +1,7 @@
 'use client';
 
 import { cn } from '@/lib/utils';
-import { appConfig } from '@/config/shipper.config';
+import { appConfig } from '@/config/shipper.appconfig';
 import { X } from 'lucide-react';
 import { Dispatch, SetStateAction, useRef, useState } from 'react';
 import { Button } from '../ui/button';
