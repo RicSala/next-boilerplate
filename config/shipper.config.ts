@@ -1,4 +1,4 @@
-export const config = {
+export const appConfig = {
     routes: {
         /**
          *  Private route prefixes
@@ -11,12 +11,13 @@ export const config = {
 
         /**
          * An array of routes that are used for the auth
-         * @type {{signin: string, signup: string, recover: string}}
+         * @type {{signin: string, signup: string, reset: string}}
          */
         auth: {
             signin: '/signin',
             signup: '/signup',
-            recover: '/recover',
+            reset: '/reset',
+            newPassword: '/new-password',
         },
 
         /**
@@ -28,7 +29,7 @@ export const config = {
         /**
          * This is the page where the user will be redirected after login
          */
-        defaultLogingRedirect: '/',
+        defaultLogingRedirect: '/app',
     },
 
     general: {

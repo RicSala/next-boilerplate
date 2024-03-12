@@ -7,6 +7,7 @@ import Link from 'next/link';
 import AuthHeader from '../auth-header';
 import AuthImage from '../auth-image';
 import { ResetPasswordForm } from '@/components/auth/reset-password-form';
+import { NewPasswordForm } from '@/components/auth/new-password-form';
 
 export default function ResetPassword() {
     return (
@@ -22,7 +23,7 @@ export default function ResetPassword() {
                                 Actualiza tu contraseña ✨
                             </h1>
                             {/* Form */}
-                            <ResetPasswordForm />
+                            <NewPasswordForm />
                         </div>
                     </div>
                 </div>

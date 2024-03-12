@@ -23,7 +23,11 @@ export default function SignIn() {
                             {/* Form */}
                             <LoginForm />
                             {/* Footer */}
-                            <SwitchLink signUp resetPassword />
+                            <SwitchLink
+                                signUp
+                                resetPassword
+                                className='space-y-4 mt-4'
+                            />
                         </div>
                     </div>
                 </div>

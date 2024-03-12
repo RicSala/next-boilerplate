@@ -1,6 +1,6 @@
 // Mailgun endpoint. Used for now for feedback received. Generalize it to use for email. How can we limit the # of emails a user can send??
 
-import { sendEmail } from '@/lib/mailgun';
+import { sendEmail } from '@/lib/email';
 import { NextRequest, NextResponse } from 'next/server';
 
 export async function POST(request: NextRequest) {

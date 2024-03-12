@@ -13,35 +13,39 @@ import {
 } from '../ui/form';
 import { Input } from '../ui/input';
 import { Button } from '../ui/button';
-import { signIn } from 'next-auth/react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { resetPasswordFormSchema } from '@/schemas/auth-schemas';
+import { newPasswordFormSchema } from '@/schemas/auth-schemas';
 import { Message } from './message';
-import { resetPassword } from '@/actions/auth';
+import { newPassword } from '@/actions/auth';
 import { useState } from 'react';
 import { appConfig } from '@/config/shipper.config';
+import { useSearchParams } from 'next/navigation';
 
-export type TResetPasswordSchema = z.infer<typeof resetPasswordFormSchema>;
+export type TNewPasswordSchema = z.infer<typeof newPasswordFormSchema>;
 
-export function ResetPasswordForm({}) {
-    const form = useForm({
-        resolver: zodResolver(resetPasswordFormSchema),
+export function NewPasswordForm({}) {
+    const form = useForm<TNewPasswordSchema>({
+        resolver: zodResolver(newPasswordFormSchema),
         defaultValues: {
-            email: '',
+            password: '',
         },
     });
+    const searchParams = useSearchParams();
     const [error, setError] = useState<string | undefined>('');
     const [success, setSuccess] = useState<string | undefined>('');
+
+    const token = searchParams.get('token');
+
     const successCard = success && (
         <Message message={success} variant={'success'} />
     );
     const errorCard = error && <Message message={error} variant={'error'} />;
 
-    const onSubmit = async (values: TResetPasswordSchema) => {
+    const onSubmit = async (values: TNewPasswordSchema) => {
         console.log('values', values);
         try {
-            const res = await resetPassword(values);
+            const res = await newPassword(values, token);
             setSuccess(res?.success);
             setError(res?.error);
         } catch (error) {}
@@ -52,22 +56,20 @@ export function ResetPasswordForm({}) {
             <form onSubmit={form.handleSubmit(onSubmit)} className='space-y-8'>
                 <FormField
                     control={form.control}
-                    name='email'
+                    name='password'
                     render={({ field }) => (
                         <FormItem>
-                            <FormLabel>e-mail</FormLabel>
+                            <FormLabel>Nueva contraseña</FormLabel>
                             <FormControl>
                                 <Input
-                                    placeholder='tuemail@tuweb.com'
+                                    placeholder='******'
+                                    type='password'
                                     {...field}
-                                    autoComplete='email'
+                                    autoComplete='new-password'
                                 />
                             </FormControl>
                             <FormDescription>
-                                {`Email con el que te diste de alta en ${appConfig.general.appName}`}
-                                <br />
-                                <br />
-                                {`Te enviaremos un link para que puedas cambiar tu contraseña`}
+                                {`Escribe tu nueva contraseña`}
                             </FormDescription>
                             <FormMessage />
                         </FormItem>
@@ -77,9 +79,11 @@ export function ResetPasswordForm({}) {
                 {errorCard}
                 <Button type='submit' disabled={form.formState.isSubmitting}>
                     {form.formState.isSubmitting ? (
-                        <div className='flex flex-row gap-2'>Enviando link</div>
+                        <div className='flex flex-row gap-2'>
+                            Cambiando contraseña
+                        </div>
                     ) : (
-                        `Enviar link`
+                        `Cambiar contraseña`
                     )}
                 </Button>
             </form>

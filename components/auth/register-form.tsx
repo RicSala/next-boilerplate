@@ -22,10 +22,10 @@ import { Computer } from 'lucide-react';
 import { registerFormSchema } from '@/schemas/auth-schemas';
 import { Message } from './message';
 import { useState, useTransition } from 'react';
-import { config } from '@/config/shipper.config';
 import { Social } from './social';
 import { useSearchParams } from 'next/navigation';
 import { TStatus } from '@/types/types';
+import { appConfig } from '@/config/shipper.config';
 
 type RegisterFormProps = {
     callbackUrl?: string;
@@ -74,7 +74,7 @@ export function RegisterForm({
                     redirect: isRedirected,
                     callbackUrl:
                         // Send the user to where he was before or the default route
-                        callbackUrl || config.routes.defaultLogingRedirect,
+                        callbackUrl || appConfig.routes.defaultLogingRedirect,
                 });
             })
             .then(() => {

@@ -1,9 +1,9 @@
 'use client';
-import { config } from '@/config/shipper.config';
 import { cn } from '@/lib/utils';
 import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
 import { Button } from '../ui/button';
+import { appConfig } from '@/config/shipper.config';
 
 type SwitchLinkProps = {
     signIn?: () => void;
@@ -20,7 +20,7 @@ export function SwitchState({
 }: SwitchLinkProps) {
     // get all the query params
     const query = useSearchParams();
-    const { signin, signup, recover } = config.routes.auth;
+    const { signin, signup, reset: recover } = appConfig.routes.auth;
 
     return (
         <div className={cn(``, className)}>

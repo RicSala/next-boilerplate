@@ -1,26 +1,27 @@
 // REVIEW:
 
-import { createTransport } from 'nodemailer';
 import NextAuth, { NextAuthConfig } from 'next-auth';
-import { authMiddlewareOptions } from '@/auth.middleware.config';
 import { getUserByEmail } from './actions/getUser';
 import { db } from './lib/prisma';
 import { PrismaAdapter } from '@auth/prisma-adapter';
 import GoogleProvider from 'next-auth/providers/google';
 import CredentialsProvider from 'next-auth/providers/credentials';
 import EmailProvider from 'next-auth/providers/nodemailer';
-import { config } from './config/shipper.config';
+import { appConfig } from './config/shipper.config';
 import bcrypt from 'bcryptjs';
-import { sendEmail } from './lib/mailgun';
+import { sendEmail } from './lib/email';
 
 export const authOptions = {
     adapter: PrismaAdapter(db),
     providers: [
         GoogleProvider({
+            id: 'google',
+            name: 'Google',
             clientId: process.env.GOOGLE_CLIENT_ID!,
             clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
         }),
         CredentialsProvider({
+            id: 'credentials',
             name: 'credentials',
             credentials: {
                 email: { label: 'Email', type: 'text', placeholder: ' ' },
@@ -64,6 +65,7 @@ export const authOptions = {
 
         EmailProvider({
             name: 'email',
+            id: 'email',
             server: {
                 host: process.env.SMTP_HOST,
                 port: Number(process.env.SMTP_PORT),
@@ -72,7 +74,7 @@ export const authOptions = {
                     pass: process.env.SMTP_PASSWORD,
                 },
             },
-            from: config.email.fromNoReply,
+            from: appConfig.email.fromNoReply,
             async sendVerificationRequest(params) {
                 const {
                     identifier: email,
@@ -270,7 +272,7 @@ function html(params: { url: string; host: string; theme: any }) {
       <tr>
         <td align="center"
           style="padding: 10px 0px; font-size: 22px; font-family: Helvetica, Arial, sans-serif; color: ${color.text};">
-          Entra en <strong>${config.general.appName}</strong>
+          Entra en <strong>${appConfig.general.appName}</strong>
         </td>
       </tr>
       <tr>

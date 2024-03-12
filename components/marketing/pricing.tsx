@@ -1,5 +1,5 @@
 import { cn } from '@/lib/utils';
-import { config } from '@/config/shipper.config';
+import { appConfig } from '@/config/shipper.config';
 // import Highlight from '../utils/highlight';
 import { getStripeInstance } from '@/lib/stripe';
 import FeaturedLogo from '../icons/featured-logo';
@@ -14,7 +14,7 @@ export const Pricing = async () => {
     });
 
     const plans = productList.data.filter((product) =>
-        config.productIds.includes(product.id)
+        appConfig.productIds.includes(product.id)
     );
 
     return (

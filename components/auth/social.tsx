@@ -1,15 +1,23 @@
 'use client';
 
 import { Separator } from '@radix-ui/react-separator';
-import { signIn } from 'next-auth/react';
+import { getProviders, signIn } from 'next-auth/react';
 import { Button } from '../ui/button';
-import { config } from '@/config/shipper.config';
 import { useSearchParams } from 'next/navigation';
+import { appConfig } from '@/config/shipper.config';
+import { useEffect } from 'react';
 
 export function Social({}) {
     // get the callbackUrl from query params
     const query = useSearchParams();
     const callbackUrl = query.get('callbackUrl');
+
+    // This could be useful to load the providers dynamically instead of hardcoding them
+    // useEffect(() => {
+    //     getProviders().then((providers) => {
+    //         console.log('providersAsync', { providers });
+    //     });
+    // }, []);
 
     return (
         <div className='flex flex-col items-center space-y-2 w-full'>
@@ -22,7 +30,8 @@ export function Social({}) {
                     const res = await signIn('google', {
                         callbackUrl:
                             // Send the user to where he was before or the default route
-                            callbackUrl || config.routes.defaultLogingRedirect,
+                            callbackUrl ||
+                            appConfig.routes.defaultLogingRedirect,
                     });
                 }}
             >
@@ -31,14 +40,15 @@ export function Social({}) {
                 }
                 Google
             </Button>
-            <Button
+            {/* <Button
                 variant='outline'
                 className='w-full'
                 onClick={async () => {
                     const res = await signIn('linkedin', {
                         callbackUrl:
                             // Send the user to where he was before or the default route
-                            callbackUrl || config.routes.defaultLogingRedirect,
+                            callbackUrl ||
+                            appConfig.routes.defaultLogingRedirect,
                     });
                 }}
             >
@@ -46,7 +56,7 @@ export function Social({}) {
                     //TODO: review callback después de logearse con google
                 }
                 Linkedin
-            </Button>
+            </Button> */}
         </div>
     );
 }

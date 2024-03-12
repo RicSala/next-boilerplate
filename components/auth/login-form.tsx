@@ -18,11 +18,11 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { CardWrapper } from '../shared/card-wrapper';
 import { signInFormSchema } from '@/schemas/auth-schemas';
 import { signIn } from 'next-auth/react';
-import { config } from '@/config/shipper.config';
 import { useSearchParams } from 'next/navigation';
 import { type } from 'os';
 import { useState } from 'react';
 import { Message } from './message';
+import { appConfig } from '@/config/shipper.config';
 
 type LoginFormProps = {
     isRedirected?: boolean;
@@ -52,7 +52,7 @@ export function LoginForm({ isRedirected, onAuth }: LoginFormProps) {
                 redirect: isRedirected,
                 callbackUrl:
                     // Send the user to where he was before or the default route
-                    callbackUrl || config.routes.defaultLogingRedirect,
+                    callbackUrl || appConfig.routes.defaultLogingRedirect,
             });
 
             if (res!.error) {
@@ -86,7 +86,7 @@ export function LoginForm({ isRedirected, onAuth }: LoginFormProps) {
                                     />
                                 </FormControl>
                                 <FormDescription>
-                                    {`Email con el que te diste de alta en ${config.general.appName}`}
+                                    {`Email con el que te diste de alta en ${appConfig.general.appName}`}
                                 </FormDescription>
                                 <FormMessage />
                             </FormItem>
@@ -108,7 +108,7 @@ export function LoginForm({ isRedirected, onAuth }: LoginFormProps) {
                                 </FormControl>
                                 <FormDescription>
                                     {`Si no la recuerdas, escríbenos a
-                                    ${config.email.supportEmail}`}
+                                    ${appConfig.email.supportEmail}`}
                                 </FormDescription>
                                 <FormMessage />
                             </FormItem>
